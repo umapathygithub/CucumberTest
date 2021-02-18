@@ -1,0 +1,204 @@
+@integration
+Feature: Home Page Execution
+
+
+Background:
+Given Open the chrome browser. 
+   And load the facebook url.
+@smoke
+    Scenario: Username and Password with positive flow
+    When Enter the username in username field .
+    |shahul|hameed|
+    |hameed|shahul|
+    |aiite|tech|
+    And Enter the password in password field.
+    |shahulPass|shahulPas1|shahulPas2|
+    |hameed@|hameed@|hameed@|
+    |hameed+|shahul|hameed+|
+    |hameed-|hameed-|hameed-|
+    And Click on Loginbutton.
+    Then Check the user is landing in Home page
+    And Check the user icon showing the username.
+    
+  @sanity
+		 Scenario: Username and Password with negative flow
+    When Enter the username in username field .
+    |shahul|hameed|
+    |hameed|shahul|
+    |aiite|tech|
+    And Enter the password in password field.
+    |shahulPass|shahulPas1|shahulPas2|
+    |hameed@|hameed@|hameed@|
+    |hameed+|shahul|hameed+|
+    |hameed-|hameed-|hameed-|
+    And Click on Loginbutton.
+    Then Check the user is landing in Home page
+    And Check the user icon showing the username.
+    -----------------------------------------------------------
+    package stepdefinition;
+
+import java.util.List;
+import java.util.Map;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
+public class HomePageStepdefinition {
+	protected static WebDriver  drive =null;
+	
+	@Given("Open the chrome browser.")
+	public void open_the_chrome_browser() {
+	    // Write code here that turns the phrase above into concrete actions
+	System.setProperty("webdriver.chrome.driver", "./Driver/chromedriver.exe");
+	drive = new ChromeDriver();
+	drive.manage().window().maximize();
+	}
+	
+	@Given("load the facebook url.")
+	public void load_the_facebook_url() {
+	    // Write code here that turns the phrase above into concrete actions
+		drive.get("https://www.facebook.com/");
+	}
+
+	@When("Enter the username in username field .")
+	public void enter_the_username_in_username_field(io.cucumber.datatable.DataTable dataTable) {
+		/* to fetch data as List from data table:
+		 *|shahul|
+		 *|shahul|
+		 *|shahul|
+		List<String> asList = dataTable.asList();
+		drive.findElement(By.id("email")).sendKeys(asList.get(1));*/
+	
+		/* to fetch data as List<List<>> from data table:
+		 *|shahul|hameed|
+    	   |hameed|shahul|
+    	   |aiite|tech|
+		List<List<String>> aslists= dataTable.asLists();
+		drive.findElement(By.id("email")).sendKeys(aslists.get(2).get(1));*/
+		List<List<String>> aslists= dataTable.asLists();
+		drive.findElement(By.id("email")).sendKeys(aslists.get(2).get(1));
+	
+	}
+
+	@When("Enter the password in password field.")
+	public void enter_the_password_in_password_field(io.cucumber.datatable.DataTable dataTable) {
+		/*To fetch datable as map
+		 * |shahulPass|hameed@|
+		 * Map<String, String> asMap = dataTable.asMap(String.class, String.class);
+		drive.findElement(By.id("pass")).sendKeys(asMap.get("shahulPass"));*/
+		/* to fetch datatable value in sMaps
+		 * |shahulPass|shahulPas1|shahulPas2|
+    		|hameed@|hameed@|hameed@|
+    		|hameed+|shahul|hameed+|
+    		|hameed-|hameed-|hameed-|
+		 */
+		List<Map<String, String>> asMaps = dataTable.asMaps(String.class, String.class);
+		System.out.println(asMaps.get(1).get("shahulPas1"));
+		drive.findElement(By.id("pass")).sendKeys(asMaps.get(1).get("shahulPas1"));
+	}
+
+	@When("Click on Loginbutton.")
+	public void click_on_Loginbutton() {
+	    // Write code here that turns the phrase above into concrete actions
+		drive.findElement(By.id("u_0_b"));
+	}
+
+	@Then("Check the user is landing in Home page")
+	public void check_the_user_is_landing_in_Home_page() {
+		System.out.println("login completed");
+	}
+
+	@Then("Check the user icon showing the username.")
+	public void check_the_user_icon_showing_the_username() {
+	    // Write code here that turns the phrase above into concrete actions
+		System.out.println("login verified the user");
+	}
+	
+	
+}
+-------------------------------------------------------------------
+package stepdefinition;
+
+import java.util.Date;
+
+import org.junit.After;
+import org.junit.Before;
+
+
+
+public class Hook {
+	
+	
+	@Before
+	public void before() {
+		System.out.println(new Date());
+	}
+	
+	@After
+	public void after() {
+		System.out.println(new Date());
+	}
+	
+}
+----------------------------------------------------------------------
+package stepdefinition;
+
+import org.junit.runner.RunWith;
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(features="@target/failed.txt",monochrome=true, 
+							plugin= {"json:target/cucmberfailed.json","rerun:target/failed.txt"})
+public class ReRunner {
+	
+	
+
+}
+----------------------------------------------------------------------
+package stepdefinition;
+
+import org.junit.runner.RunWith;
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+@RunWith(Cucumber.class)
+@CucumberOptions
+(features="C:\\Users\\umapathy\\eclipse-workspace\\CucumberTest\\src\\test\\resources\\Feature"
+	,glue= "stepdefinition",monochrome=true,strict=true,plugin= {"json:target/cucmber.json","rerun:target/failed.txt"}
+				,tags= {"@integration"})
+
+
+public class Runner {
+}
+--------------------------------------------------------------------------
+@regression
+Feature: Title of your feature
+ 
+@integration
+    Scenario: Username and Password with positive flow
+    Given Open the chrome browser. 
+    And load the facebook url.
+    When Enter the username in username field .
+    |shahul|hameed|
+    |hameed|shahul|
+    |aiite|tech|
+    And Enter the password in password field.
+    |shahulPass|shahulPas1|shahulPas2|
+    |hameed@|hameed@|hameed@|
+    |hameed+|shahul|hameed+|
+    |hameed-|hameed-|hameed-|
+    And Click on Loginbutton.
+    Then Check the user is landing in Home page.
+  And Check the user icon showing the username.
+    
+  
+
+ ------------------------------------------------------------------------
